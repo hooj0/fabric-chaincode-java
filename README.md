@@ -74,7 +74,126 @@ shadowJar {
 }
 ```
 
-新建完成后，可以在项目上右键，选择`Gradle -> Refresh Gradle Project`加载项目依赖的`Jar`包。
+**新建完成后，可以在项目上右键，选择`Gradle -> Refresh Gradle Project`加载项目依赖的`Jar`包**。
+
+## 创建 `Maven` 项目
+
+**可以在`fabric-chaincode-example-gradle`的同级新建一个`maven`项目`fabric-chaincode-asset-maven`**。确保项目构建创建一个可运行的`jar`，其中包含名为`chaincode.jar`的所有依赖项。在`maven`的配置文件`pom.xml`中添加如下配置：
+
+```xml
+<properties>
+    <!-- Generic properties -->
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- fabric-chaincode-java dev -->
+    <fabric-chaincode-java.version>1.3.1-SNAPSHOT</fabric-chaincode-java.version>
+    <!-- prod env
+  <fabric-chaincode-java.version>1.3.0</fabric-chaincode-java.version>
+  -->
+
+    <!-- Logging -->
+    <logback.version>1.0.13</logback.version>
+    <slf4j.version>1.7.5</slf4j.version>
+
+    <!-- Test -->
+    <junit.version>4.11</junit.version>
+</properties>
+
+<dependencies>
+
+    <!-- fabric-chaincode-java -->
+    <dependency>
+        <groupId>org.hyperledger.fabric-chaincode-java</groupId>
+        <artifactId>fabric-chaincode-shim</artifactId>
+        <version>${fabric-chaincode-java.version}</version>
+        <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.hyperledger.fabric-chaincode-java</groupId>
+        <artifactId>fabric-chaincode-protos</artifactId>
+        <version>${fabric-chaincode-java.version}</version>
+        <scope>compile</scope>
+    </dependency>
+
+
+    <!-- fabric-sdk-java -->
+
+    <!-- Logging with SLF4J & LogBack -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+        <scope>runtime</scope>
+    </dependency>
+
+    <!-- Test Artifacts -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+
+<build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <plugins>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <finalName>chaincode</finalName>
+                        <transformers>
+                            <transformer
+                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <mainClass>com.github.hooj0.chaincode.SimpleAssetChaincode</mainClass>
+                            </transformer>
+                        </transformers>
+                        <filters>
+                            <filter>
+                                <!-- filter out signature files from signed dependencies, else repackaging fails with security ex -->
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/*.SF</exclude>
+                                    <exclude>META-INF/*.DSA</exclude>
+                                    <exclude>META-INF/*.RSA</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
 
 ## 创建链码类
 
@@ -397,6 +516,9 @@ public class SimpleAssetChaincode extends ChaincodeBase {
 $ cd fabric-chaincode-asset/fabric-chaincode-asset-gradle
 
 $ gradle clean build shadowJar
+
+# 如果是Maven项目
+$ mvn clean install
 ```
 
 假设没有错误，会生成`jar`文件，现在可以继续下一步，测试链代码。
@@ -414,9 +536,9 @@ total 16584
 
 通过为示例开发网络，利用**预先生成的定序者和通道工件**来启动“开发模式(`dev mode`)”。这样，用户可以**立即进入编译链码和操作调用**的过程。
 
-如果还不会开发模式，可以参考[开发模式使用方式文档](hyperledger%20fabric%20Chaincode%20开发模式.md)。
+如果还不会开发模式，可以参考[开发模式使用方式文档](https://github.com/hooj0/notes/blob/master/blockchain/hyperledger/hyperledger%20fabric%20Chaincode%20%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F.md)。
 
-# 准备示例和链码
+# 准备`Gradle`示例和链码
 
 如果还没有这样做，请[安装样本，二进制文件和Docker镜像](https://hyperledger-fabric.readthedocs.io/en/latest/install.html)。
 
@@ -438,6 +560,29 @@ $ mkdir -p asset/java
 $ cp xxx/xxx/src/*.java asset/java/src
 
 $ cp xxx/xxx/*.gradle asset/java/
+```
+# 准备`Maven`示例和链码
+
+如果还没有这样做，请[安装样本，二进制文件和Docker镜像](https://hyperledger-fabric.readthedocs.io/en/latest/install.html)。
+
+进入到示例目录下的 `chaincode`位置。
+
+```sh
+$ cd fabric-samples/chaincode
+```
+
+创建链码文件夹
+
+```sh
+$ mkdir -p asset/java
+```
+
+将项目的**源代码和`maven`**的配置文件，拷贝到上面的文件夹中
+
+```sh
+$ cp -r xxx/xxx/src asset/java/
+
+$ cp xxx/xxx/*.pom asset/java/
 ```
 
 # 测试和运行链码
