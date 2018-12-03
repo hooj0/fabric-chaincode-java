@@ -30,13 +30,13 @@ $ git clone https://github.com/hyperledger/fabric-chaincode-java.git
 
 **文件夹结构**：
 
-`fabric-chaincode-protos` 文件夹包含`Java shim`用于与`Fabric`对等方通信的`protobuf`定义文件。
++ `fabric-chaincode-protos` 文件夹包含`Java shim`用于与`Fabric`对等方通信的`protobuf`定义文件。
 
-`fabric-chaincode-shim` 文件夹包含定义`Java`链代码`API`的`java shim`类以及与`Fabric`对等方通信的方式。
++ `fabric-chaincode-shim` 文件夹包含定义`Java`链代码`API`的`java shim`类以及与`Fabric`对等方通信的方式。
 
-`fabric-chaincode-docker` 文件夹包含构建`docker`镜像的说明 `hyperledger/fabric-javaenv`。
++ `fabric-chaincode-docker` 文件夹包含构建`docker`镜像的说明 `hyperledger/fabric-javaenv`。
 
-`fabric-chaincode-example-gradle` 包含一个示例`java chaincode gradle`项目，其中包含示例链代码和基本`gradle`构建指令。
++ `fabric-chaincode-example-gradle` 包含一个示例`java chaincode gradle`项目，其中包含示例链代码和基本`gradle`构建指令。
 
 ## 创建`Gradle`项目
 
