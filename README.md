@@ -1,6 +1,6 @@
 # `Java Chaincode` 开发教程
 
-本教程将讲解如何编写基于`Java`的`Hyperledger Fabric`链代码。有关链码的一般说明，如何编写和操作，请访问[Chaincode教程](./hyperledger%20fabric%20Chaincode%20开发教程.md)。
+本教程将讲解如何编写基于`Java`的`Hyperledger Fabric`链代码。有关链码的一般说明，如何编写和操作，请访问[Chaincode教程](https://github.com/hooj0/notes/blob/master/blockchain/hyperledger/hyperledger%20fabric%20Chaincode%20%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B.md)。
 
 # 必要工具
 
@@ -40,7 +40,7 @@ $ git clone https://github.com/hyperledger/fabric-chaincode-java.git
 
 ## 创建`Gradle`项目
 
-可以使用`fabric-chaincode-example-gradle`作为起始点。确保项目构建创建一个可运行的`jar`，其中包含名为`chaincode.jar`的所有依赖项。
+**可以使用`fabric-chaincode-example-gradle`作为起始点。或者在`fabric-chaincode-example-gradle`的同级新建一个`gradle`项目`fabric-chaincode-asset-gradle`**。确保项目构建创建一个可运行的`jar`，其中包含名为`chaincode.jar`的所有依赖项。
 
 ```groovy
 plugins {
