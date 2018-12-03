@@ -1,0 +1,146 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<groupId>io.github.hooj0</groupId>
+	<artifactId>fabric-chaincode-asset-maven</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>jar</packaging>
+
+	<!-- @changelog Add hyperledger fabric chaincode Java development tutorial example -->
+	<name>fabric chaincode java example</name>
+	<description>hyperledger fabric chaincode Java development tutorial example.</description>
+	<url>https://github.com/hooj0/fabric-chaincode-java</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Developers</name>
+			<email>hoojo_@126.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:github.com/hooj0/fabric-chaincode-java.git</connection>
+		<developerConnection>scm:git:github.com/hooj0/fabric-chaincode-java.git</developerConnection>
+		<url>https://github.com/hooj0/fabric-chaincode-java.git</url>
+	</scm>
+
+	<properties>
+		<!-- Generic properties -->
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- fabric-chaincode-java -->
+		<fabric-chaincode-java.version>1.3.1-SNAPSHOT</fabric-chaincode-java.version>
+
+		<!-- Logging -->
+		<logback.version>1.0.13</logback.version>
+		<slf4j.version>1.7.5</slf4j.version>
+
+		<!-- Test -->
+		<junit.version>4.11</junit.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- fabric-chaincode-java -->
+		<dependency>
+			<groupId>org.hyperledger.fabric-chaincode-java</groupId>
+			<artifactId>fabric-chaincode-shim</artifactId>
+			<version>${fabric-chaincode-java.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hyperledger.fabric-chaincode-java</groupId>
+			<artifactId>fabric-chaincode-protos</artifactId>
+			<version>${fabric-chaincode-java.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<!-- fabric-sdk-java -->
+
+		<!-- Logging with SLF4J & LogBack -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Test Artifacts -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<finalName>chaincode</finalName>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.github.hooj0.chaincode.SimpleAssetChaincode</mainClass>
+								</transformer>
+							</transformers>
+							<filters>
+								<filter>
+									<!-- filter out signature files from signed dependencies, else repackaging 
+										fails with security ex -->
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
