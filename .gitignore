@@ -30,6 +30,9 @@ bin
 .class
 .classpath
 .settings
+target
+*/target/
+/target
 
 fabric-chaincode-docker
 fabric-chaincode-protos
