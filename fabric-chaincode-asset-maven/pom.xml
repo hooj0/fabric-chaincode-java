@@ -41,7 +41,10 @@
 
 		<!-- fabric-chaincode-java -->
 		<fabric-chaincode-java.version>1.3.1-SNAPSHOT</fabric-chaincode-java.version>
-
+		<!-- install chaincode 
+		<fabric-chaincode-java.version>1.3.0</fabric-chaincode-java.version>
+		-->
+		
 		<!-- Logging -->
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -77,6 +80,7 @@
 			<version>${slf4j.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -95,7 +99,7 @@
 	</dependencies>
 	
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -126,8 +130,7 @@
 							</transformers>
 							<filters>
 								<filter>
-									<!-- filter out signature files from signed dependencies, else repackaging 
-										fails with security ex -->
+									<!-- filter out signature files from signed dependencies, else repackaging fails with security ex -->
 									<artifact>*:*</artifact>
 									<excludes>
 										<exclude>META-INF/*.SF</exclude>
