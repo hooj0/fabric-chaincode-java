@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--设置log4j2的自身log级别为debug, 120秒自动扫描加载更改 -->
+<configuration status="OFF" monitorInterval="120">
+	<appenders>
+		<console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%-5p] [%l] %m%n"/>
+		</console>
+
+		<RollingFile name="FILE" fileName="chaincode.log" filePattern="chaincode_%d{yyyy-MM-dd}_%i.log">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%-5p] [%l] %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+				<SizeBasedTriggeringPolicy size="100 MB"/>
+			</Policies>
+		</RollingFile>
+		
+	</appenders>
+
+	<loggers>
+		
+		<root level="DEBUG">
+			<appender-ref ref="CONSOLE"/>
+			<appender-ref ref="FILE"/>
+		</root>
+	</loggers>
+
+</configuration>
+
