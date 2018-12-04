@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>	
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%highlight(%-5level) | %green(%-50logger{15}) | %-3L | %highlight(%msg) %n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="org.apache.http" level="DEBUG" />
+	<logger name="io.grpc.netty" level="DEBUG" />
+	<logger name="io.netty" level="DEBUG" />
+
+	<root level="DEBUG">
+		<appender-ref ref="console" />
+	</root>
+</configuration>
