@@ -674,7 +674,7 @@ CONTAINER ID        IMAGE                                                       
 296f09b716af        hyperledger/fabric-orderer:latest                                                    "orderer"                17 minutes ago      Up 17 minutes       0.0.0.0:7050->7050/tcp                           orderer
 
 # 通过名称查看容器日志
-$ docker logs dev-peer-asset-v0-ab37288c7dfae60b51cf93c7fade76b6d55b2225c1d00a81a627037628408dc7
+$ docker logs dev-peer-asset-v0
 
 # 通过id查看容器日志
 $ docker logs -f 32ef0a73a344
