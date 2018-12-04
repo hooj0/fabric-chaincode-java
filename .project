@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>fabric-chaincode-asset</name>
-	<comment></comment>
+	<name>fabric-chaincode-java-examples</name>
+	<comment>Project fabric-chaincode-java-examples created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
