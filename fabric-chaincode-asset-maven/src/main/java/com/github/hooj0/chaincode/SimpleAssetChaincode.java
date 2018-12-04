@@ -1,12 +1,15 @@
 package com.github.hooj0.chaincode;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hyperledger.fabric.shim.ChaincodeBase;
 import org.hyperledger.fabric.shim.ChaincodeStub;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.protobuf.ByteString;
 
 /**
@@ -22,7 +25,8 @@ import com.google.protobuf.ByteString;
  */
 public class SimpleAssetChaincode extends ChaincodeBase {
 
-	private static final Log logger = LogFactory.getLog(ChaincodeBase.class);
+	private static final Log log = LogFactory.getLog(ChaincodeBase.class);
+	private static final Logger logger = LoggerFactory.getLogger(SimpleAssetChaincode.class);
 	
 	/**
      * Init is called during chaincode instantiation to initialize any
@@ -37,8 +41,8 @@ public class SimpleAssetChaincode extends ChaincodeBase {
         try {
             // Get the args from the transaction proposal
             List<String> args = stub.getStringArgs();
-            logger.info("args size: " +  args.size());
-            logger.info("args: " +  args);
+            log.info("args size: " +  args.size());
+            log.info("args: " +  args);
             
             if (args.size() != 2) {
                 newErrorResponse("Incorrect arguments. Expecting a key and a value");
@@ -46,11 +50,11 @@ public class SimpleAssetChaincode extends ChaincodeBase {
             // Set up any variables or assets here by calling stub.putState()
             // We store the key and the value on the ledger
             stub.putStringState(args.get(0), args.get(1));
-            logger.info(String.format("put state: %s - %s", args.get(0), args.get(1)));
+            log.info(String.format("put state: %s - %s", args.get(0), args.get(1)));
             
             return newSuccessResponse();
         } catch (Throwable e) {
-        	logger.info(e.getMessage());
+        	log.error(e.getMessage());
             return newErrorResponse("Failed to create asset");
         }
     }
@@ -70,7 +74,7 @@ public class SimpleAssetChaincode extends ChaincodeBase {
             String func = stub.getFunction();
             List<String> params = stub.getParameters();
             
-            logger.info(String.format("func: %s, args: %s", func, params));
+            log.info(String.format("func: %s, args: %s", func, params));
             
             if (func.equals("set")) {
                 // Return result as success payload
@@ -83,7 +87,7 @@ public class SimpleAssetChaincode extends ChaincodeBase {
             
             return newErrorResponse("Invalid invoke function name. Expecting one of: [\"set\", \"get\"");
         } catch (Throwable e) {
-        	logger.info(e.getMessage());
+        	log.error(e.getMessage());
             return newErrorResponse(e.getMessage());
         }
     }
@@ -96,16 +100,17 @@ public class SimpleAssetChaincode extends ChaincodeBase {
      * @return value
      */
     private String get(ChaincodeStub stub, List<String> args) {
-    	System.out.println("........................ init .........................");
+    	System.out.println(".........................init .........................");
     	logger.info("------------------------");
     	logger.info(String.format("get state: %s", args.get(0)));
-    	logger.debug(String.format("get state: %s", args.get(0)));
+    	log.debug(String.format("get state: %s", args.get(0)));
+    	log.info(String.format("get state: %s", args.get(0)));
     	logger.debug("------------------------");
     	
         if (args.size() != 1) {
             throw new RuntimeException("Incorrect arguments. Expecting a key");
         }
-        logger.info(String.format("get state: %s", args.get(0)));
+        log.info(String.format("get state: %s", args.get(0)));
         
         String value = stub.getStringState(args.get(0));
         if (value == null || value.isEmpty()) {
@@ -128,7 +133,7 @@ public class SimpleAssetChaincode extends ChaincodeBase {
             throw new RuntimeException("Incorrect arguments. Expecting a key and a value");
         }
         stub.putStringState(args.get(0), args.get(1));
-        logger.info(String.format("put state: %s - %s", args.get(0), args.get(1)));
+        log.info(String.format("put state: %s - %s", args.get(0), args.get(1)));
         
         return args.get(1);
     }
