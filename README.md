@@ -195,6 +195,25 @@ shadowJar {
 </build>
 ```
 
+最终目录结构如下：
+
+```sh
+$ ll
+total 65
+
+-rw-r--r-- 1 Administrator 197121   687 十二  3 16:30 build.gradle
+drwxr-xr-x 1 Administrator 197121     0 十二  3 17:04 fabric-chaincode-asset-gradle/
+drwxr-xr-x 1 Administrator 197121     0 十二  3 16:39 fabric-chaincode-asset-maven/
+drwxr-xr-x 1 Administrator 197121     0 十一 30 16:55 fabric-chaincode-docker/
+drwxr-xr-x 1 Administrator 197121     0 十一 30 16:55 fabric-chaincode-protos/
+drwxr-xr-x 1 Administrator 197121     0 十一 30 16:56 fabric-chaincode-shim/
+-rwxr-xr-x 1 Administrator 197121  5296 十一  1 17:31 gradlew*
+-rw-r--r-- 1 Administrator 197121  2260 十一  1 17:31 gradlew.bat
+-rw-r--r-- 1 Administrator 197121  1062 十二  3 15:54 LICENSE
+-rw-r--r-- 1 Administrator 197121 22743 十二  3 17:04 README.md
+-rw-r--r-- 1 Administrator 197121   146 十二  3 16:30 settings.gradle
+```
+
 ## 创建链码类
 
 使用`Java`版的[`Simple Asset Chaincode`](https://hyperledger-fabric.readthedocs.io/en/latest/chaincode4ade.html#simple-asset-chaincode)作为示例。这个链代码是`Simple Asset Chaincode`的`Go to Java`翻译，将对此进行解释。
@@ -614,24 +633,28 @@ $ docker exec -it cli bash
 在 `cli` 容器中运行：
 
 ```sh
-$ peer chaincode install -n asset -v v0 -l java -p /opt/gopath/src/chaincodedev/chaincode/asset/java/
+$ CORE_LOGGING_PEER=info CORE_CHAINCODE_LOGGING_SHIM=info CORE_CHAINCODE_LOGGING_LEVEL=info peer chaincode install -n asset -v v0 -l java -p /opt/gopath/src/chaincodedev/chaincode/asset/java/
 
-$ peer chaincode instantiate -n asset -v v0 -c '{"Args":["a", "5"]}' -C myc -l java
+$ CORE_LOGGING_PEER=info CORE_CHAINCODE_LOGGING_SHIM=info CORE_CHAINCODE_LOGGING_LEVEL=info peer chaincode instantiate -n asset -v v0 -c '{"Args":["a", "5"]}' -C myc -l java
 ```
 
 现在发出一个`invoke`调用，将`a`的值更改为“`20`”。
 
 ```sh
-$ peer chaincode invoke -n asset -c '{"Args":["set", "a", "20"]}' -C myc
+$ CORE_LOGGING_PEER=debug peer chaincode invoke -n asset -c '{"Args":["set", "a", "20"]}' -C myc
 ```
 
 最后，查询`a`。应该看到`20`的值。
 
 ```sh
-$ peer chaincode query -n asset -c '{"Args":["get","a"]}' -C myc
+$ CORE_LOGGING_PEER=debug peer chaincode query -n asset -c '{"Args":["get","a"]}' -C myc
 ```
 
 ## 测试新的链码
 
 默认情况下，只挂载`sacc`。但是，可以通过将不同的**链码添加到`chaincode`子目录**并**重新启动网络来轻松地测试它们**。此时，可以在`chaincode`容器中访问它们。
+
+# 查看日志
+
+
 
