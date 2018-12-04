@@ -48,6 +48,7 @@
 		<!-- Logging -->
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
+		<log4j.version>2.10.0</log4j.version>
 
 		<!-- Test -->
 		<junit.version>4.11</junit.version>
@@ -87,7 +88,7 @@
 			<version>${logback.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
+		
 		<!-- Test Artifacts -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -99,7 +100,21 @@
 	</dependencies>
 	
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
+		<!-- <sourceDirectory>src/main/java</sourceDirectory> -->
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<excludes>
+					<exclude>test/**</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -123,8 +138,7 @@
 						<configuration>
 							<finalName>chaincode</finalName>
 							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>com.github.hooj0.chaincode.SimpleAssetChaincode</mainClass>
 								</transformer>
 							</transformers>
