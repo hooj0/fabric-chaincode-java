@@ -641,20 +641,65 @@ $ CORE_LOGGING_PEER=info CORE_CHAINCODE_LOGGING_SHIM=info CORE_CHAINCODE_LOGGING
 现在发出一个`invoke`调用，将`a`的值更改为“`20`”。
 
 ```sh
-$ CORE_LOGGING_PEER=debug peer chaincode invoke -n asset -c '{"Args":["set", "a", "20"]}' -C myc
+$ peer chaincode invoke -n asset -c '{"Args":["set", "a", "20"]}' -C myc
 ```
 
 最后，查询`a`。应该看到`20`的值。
 
 ```sh
-$ CORE_LOGGING_PEER=debug peer chaincode query -n asset -c '{"Args":["get","a"]}' -C myc
+$ peer chaincode query -n asset -c '{"Args":["get","a"]}' -C myc
 ```
 
 ## 测试新的链码
 
 默认情况下，只挂载`sacc`。但是，可以通过将不同的**链码添加到`chaincode`子目录**并**重新启动网络来轻松地测试它们**。此时，可以在`chaincode`容器中访问它们。
 
-# 查看日志
+# 链码日志
+
+链码容器的日志查看，需要在链码安装并实例化后才能通过 `docker` 容器的方式进行查看容器日志。一般链码容器是以`dev-peer-xxx-xxx`格式的名称的容器。
+
+## 查看链码日志
+
+查看日志具体操作如下：
+
+```sh
+# 找到链码容器
+$ docker ps
+
+CONTAINER ID        IMAGE                                                                                COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+32ef0a73a344        dev-peer-asset-v0-ab37288c7dfae60b51cf93c7fade76b6d55b2225c1d00a81a627037628408dc7   "/root/chaincode-jav…"   15 minutes ago      Up 15 minutes                                                        dev-peer-asset-v0
+299103c48df3        hyperledger/fabric-ccenv:latest                                                      "/bin/bash -c 'sleep…"   17 minutes ago      Up 17 minutes                                                        chaincode
+0e81e8e846d2        hyperledger/fabric-tools:latest                                                      "/bin/bash -c ./scri…"   17 minutes ago      Up 17 minutes                                                        cli
+2ef83f03cce6        hyperledger/fabric-peer:latest                                                       "peer node start --p…"   17 minutes ago      Up 17 minutes       0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer
+296f09b716af        hyperledger/fabric-orderer:latest                                                    "orderer"                17 minutes ago      Up 17 minutes       0.0.0.0:7050->7050/tcp                           orderer
+
+# 通过名称查看容器日志
+$ docker logs dev-peer-asset-v0-ab37288c7dfae60b51cf93c7fade76b6d55b2225c1d00a81a627037628408dc7
+
+# 通过id查看容器日志
+$ docker logs -f 32ef0a73a344
+```
+
+## 设置链码日志的级别
+
+设置环境变量覆盖掉`core.yaml`中的配置，在执行命令的时候进行环境变量设置如下：
+
+```sh
+CORE_LOGGING_PEER=info CORE_CHAINCODE_LOGGING_SHIM=info CORE_CHAINCODE_LOGGING_LEVEL=info peer chaincode install -n asset -v v0 -l java -p xxxx
+```
+
+## `Java` 链码日志
+
+链码日志需要使用官方指定的日志记录器，目前官方支持的链码容器日志输出是 `apache.commons.logging`。如果采用其他的日志记录器，可能存在安装实例化链码的时候找不到相关`JAR`文件；而且日志的输出级别不受环境变量控制，尝试使用`logback`输出日志，但无法通过配置文件或环境变量设置日志格式和级别。
+
+```java
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+private static final Log log = LogFactory.getLog(Xxx.class);
+```
+
+
 
 
 
